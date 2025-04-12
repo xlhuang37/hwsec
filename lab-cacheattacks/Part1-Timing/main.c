@@ -65,7 +65,7 @@ int main (int ac, char **av) {
     //
     for (int i=0; i<SAMPLES; i++){; 
         tmp = target_buffer[0];
-        for(int j = 0; j < num_l1_set * num_l1_assoc * 16; j++){
+        for(int j = 0; j < num_l1_set * num_l1_assoc * 128; j++){
             tmp = eviction_buffer[j * int64_per_line];
         }
         l2_latency[i] = measure_one_block_access_time((uint64_t)target_buffer);
