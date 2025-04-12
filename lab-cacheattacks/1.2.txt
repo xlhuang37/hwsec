@@ -1,0 +1,20 @@
+L1：
+Cache line size:  64 bytes
+total size:  32768 bytes
+number of ways: 1
+number of sets: 512
+raw latency:  4-5 cycles
+
+L2：
+Cache line size:  64
+total size:   1048576
+number of ways:  16
+number of sets:  1024
+raw latency:  14 cycles
+
+L3：
+Cache line size:  64
+total size:  11534336
+number of ways:  11
+number of sets: 16384
+raw latency:  50-70 cycles
