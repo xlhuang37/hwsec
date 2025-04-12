@@ -35,7 +35,7 @@ int main (int ac, char **av) {
     int num_l2_set = 1024;
     int num_l2_assoc = 16;
     int int64_per_line = 64 / sizeof(uint64_t);
-    int num_items = num_l2_set * num_l2_assoc * int64_per_line;
+    int num_items = (num_l2_set * num_l2_assoc + num_l1_set) * int64_per_line;
     uint64_t *eviction_buffer = (uint64_t *)malloc(num_items*sizeof(uint64_t));
 
     // Example: Measure L1 access latency, store results in l1_latency array
@@ -63,6 +63,8 @@ int main (int ac, char **av) {
     // ======
     //
     for (int i=0; i<SAMPLES; i++){
+        clflush((void*) target_buffer); 
+        tmp = target_buffer[0];
         for(int j = 0; j < num_l1_set; j++){
             tmp = eviction_buffer[j * int64_per_line];
         }
@@ -75,7 +77,9 @@ int main (int ac, char **av) {
     // ======
     //
     for (int i=0; i<SAMPLES; i++){
-        for(int j = 0; j < num_l2_set * num_l2_assoc; j++){
+        clflush((void*) target_buffer); 
+        tmp = target_buffer[0];
+        for(int j = 0; j < num_l2_set * num_l2_assoc + num_l1_set; j++){
             tmp = eviction_buffer[j * int64_per_line];
         }
         
