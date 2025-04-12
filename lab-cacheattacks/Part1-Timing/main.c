@@ -63,7 +63,6 @@ int main (int ac, char **av) {
     // ======
     //
     for (int i=0; i<SAMPLES; i++){
-        clflush((void*) target_buffer); 
         tmp = target_buffer[0];
         for(int j = 0; j < num_l1_set; j++){
             tmp = eviction_buffer[j * int64_per_line];
@@ -77,7 +76,6 @@ int main (int ac, char **av) {
     // ======
     //
     for (int i=0; i<SAMPLES; i++){
-        clflush((void*) target_buffer); 
         tmp = target_buffer[0];
         for(int j = 0; j < num_l2_set * num_l2_assoc + num_l1_set; j++){
             tmp = eviction_buffer[j * int64_per_line];
