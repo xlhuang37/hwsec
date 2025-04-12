@@ -63,10 +63,8 @@ int main (int ac, char **av) {
     // ======
     //
     for (int i=0; i<SAMPLES; i++){
-        for(int k = 0; k < 5; k++){
-            for(int j = 0; j < num_l1_set; j++){
-                tmp = eviction_buffer[j * int64_per_line];
-            }
+        for(int j = 0; j < num_l1_set; j++){
+            tmp = eviction_buffer[j * int64_per_line];
         }
         
         l2_latency[i] = measure_one_block_access_time((uint64_t)target_buffer);
@@ -76,6 +74,13 @@ int main (int ac, char **av) {
     // [1.2] TODO: Measure L3 Latency, store results in l3_latency array
     // ======
     //
+    for (int i=0; i<SAMPLES; i++){
+        for(int j = 0; j < num_l2_set * num_l2_assoc; j++){
+            tmp = eviction_buffer[j * int64_per_line];
+        }
+        
+        l3_latency[i] = measure_one_block_access_time((uint64_t)target_buffer);
+    }
 
 
     // Print the results to the screen
