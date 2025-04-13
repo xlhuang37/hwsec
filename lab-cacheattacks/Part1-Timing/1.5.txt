@@ -1,0 +1,4 @@
+For L2 vs L3, the theshold is roughly 125.
+
+
+For L3 vs DRAM, the threshold is roughly 250

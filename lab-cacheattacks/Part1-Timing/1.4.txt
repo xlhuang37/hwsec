@@ -1,0 +1,13 @@
+Assuming L1-L2-L3 cache are inclusive and follow a LRU eviction policy:
+
+L2 Cache:
+
+Total size / cache line size = 16384
+
+
+L3 Cache:
+
+Total size / cache line size = 180224
+
+
+if L3 is non inclusive, just add the number of lines of L2 to the result of L3 above.
