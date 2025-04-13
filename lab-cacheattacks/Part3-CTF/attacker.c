@@ -2,11 +2,80 @@
 // mman library to be used for hugepage allocations (e.g. mmap or posix_memalign only)
 #include <sys/mman.h>
 
-int main(int argc, char const *argv[]) {
+
+#define BUFF_SIZE (1<<21)
+int main(int argc, char **argv)
+{
     int flag = -1;
+	// Put your covert channel setup code here
+    int num_l1_set = 64;
+    int num_l1_assoc = 8;
+    int num_l2_set = 1024;
+    int num_l2_assoc = 16;
+    int line_size = 64;
+    int int64_per_line = line_size / sizeof(uint64_t);
+	void *buf= mmap(NULL, BUFF_SIZE, PROT_READ | PROT_WRITE, MAP_POPULATE | MAP_ANONYMOUS | MAP_PRIVATE | MAP_HUGETLB, -1, 0);
+	uint64_t *target_buffer = (uint64_t *) buf;
+	target_buffer[0] = 0;
+	uint64_t access_time = 0;
+	uint64_t tmp;
+
+
+
+
+
+	printf("Please press enter.\n");
+
+	char text_buf[2];
+	fgets(text_buf, sizeof(text_buf), stdin);
+
+	printf("Receiver now listening.\n");
+
+	bool listening = true;
+	int count = 0;
+	while (listening) {
+		int success = 0;
+		for(int j = 0; j < num_l2_set * num_l2_assoc; j++){
+			tmp = target_buffer[j * 8];
+		}
+		// asm volatile("lfence\n\t");
+		// for(int i = 0; i < 100000; i++){
+		// 	asm("pause");
+		// }
+		int affected_set = 0;
+		for(int j = 0; j < num_l2_set; j++){
+			count = 0;
+			for(int repeat = 0; repeat < 1500; repeat++){
+				for(int k = 0; k < num_l2_assoc; k++){
+					access_time = measure_one_block_access_time((uint64_t)target_buffer + 64 * j + k * num_l2_set * 64);
+					if (access_time > 130) {
+						count += 1;
+					}
+				}
+			}
+            // printf("Count: %d\n", count);
+				if(count > 5) {
+					flag = j;
+                    break;
+				}
+		}
+        if(flag != -1) {
+            break;
+        }
+		
+			// if(count == 128) {
+			// 	success++;
+			// }
+		// if(success > 8) {
+		// 	break;
+		// }
+	}
+
 
     // Put your capture-the-flag code here
 
     printf("Flag: %d\n", flag);
-    return 0;
+
+	return 0;
 }
+

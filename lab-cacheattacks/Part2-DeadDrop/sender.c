@@ -26,20 +26,73 @@ int main(int argc, char **argv)
 
   // TODO:
   // Put your covert channel setup code here
+    // [1.2] TODO: Uncomment the following line to allocate a buffer of a size
+    // of your chosing. This will help you measure the latencies at L2 and L3.
+    int num_l1_set = 64;
+    int num_l1_assoc = 8;
+    int num_l2_set = 1024;
+    int num_l2_assoc = 16;
+    int line_size = 64;
+    int int64_per_line = line_size / sizeof(uint64_t);
+    uint64_t *eviction_buffer = (uint64_t *) buf;
+    eviction_buffer[0] = 0;
+    uint64_t tmp = 0;
 
-  printf("Please type a message.\n");
+    bool sending = true;
+    
 
-  bool sending = true;
+    
+  
+    struct timespec start, current;
   while (sending) {
-      char text_buf[128];
-      fgets(text_buf, sizeof(text_buf), stdin);
+    printf("Please type a message.\n");
+    char text_buf[128];
+    fgets(text_buf, sizeof(text_buf), stdin);
+    int message = string_to_int(text_buf);
+      // for(int j = 0; j < num_l2_assoc; j++){
+      //   tmp = eviction_buffer[j * int64_per_line];
+      // }
+      // tmp = eviction_buffer[0 * int64_per_line];
+      // tmp = eviction_buffer[8];
+      // tmp = eviction_buffer[16];
+      // tmp = eviction_buffer[24];
+      // for(int i = 0; i < num_l2_assoc; i++) {
+      //   for(int j = 0; j < message; j++){
+      //       tmp = eviction_buffer[j * 8 + i * num_l2_set * 8];
+      //   }
+      // }
+      if (clock_gettime(CLOCK_MONOTONIC, &start) != 0) {
+        perror("clock_gettime");
+        return 1;
+      }
+      while (1) {
+        int outer_index = 0;
+        for (int i = 0; i < 8; i++) {
+            int index = outer_index;
+            for (int j = 0; j < message; j++) {
 
-      // TODO:
-      // Put your covert channel code here
+                tmp = eviction_buffer[index];
+                index += 8;
+            }
+            outer_index += num_l2_set * 8;
+        }
+
+        if (clock_gettime(CLOCK_MONOTONIC, &current) != 0) {
+            perror("clock_gettime");
+            return 1;
+        }
+        double elapsed = (current.tv_sec - start.tv_sec)
+                        + (current.tv_nsec - start.tv_nsec) / 1e9;
+
+        if (elapsed >= 10.0) {
+            break;
+        }
+    }
   }
 
   printf("Sender finished.\n");
   return 0;
 }
+
 
 
