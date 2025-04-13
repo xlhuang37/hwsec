@@ -43,7 +43,8 @@ int main(int argc, char **argv)
 
     
   
-    struct timespec start, current;
+  int64_t before, after;
+  int64_t RUNTIME = (1ll << 35);
   while (sending) {
     printf("Please type a message.\n");
     char text_buf[128];
@@ -61,10 +62,7 @@ int main(int argc, char **argv)
       //       tmp = eviction_buffer[j * 8 + i * num_l2_set * 8];
       //   }
       // }
-      if (clock_gettime(CLOCK_MONOTONIC, &start) != 0) {
-        perror("clock_gettime");
-        return 1;
-      }
+      before = rdtsc64();
       while (1) {
         int outer_index = 0;
         for (int i = 0; i < 8; i++) {
@@ -77,14 +75,8 @@ int main(int argc, char **argv)
             outer_index += num_l2_set * 8;
         }
 
-        if (clock_gettime(CLOCK_MONOTONIC, &current) != 0) {
-            perror("clock_gettime");
-            return 1;
-        }
-        double elapsed = (current.tv_sec - start.tv_sec)
-                        + (current.tv_nsec - start.tv_nsec) / 1e9;
-
-        if (elapsed >= 10.0) {
+        int64_t current_time = rdtsc64();
+        if (current_time - before > RUNTIME) {
             break;
         }
     }

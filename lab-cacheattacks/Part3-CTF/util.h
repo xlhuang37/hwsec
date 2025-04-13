@@ -22,4 +22,14 @@ CYCLES measure_one_block_access_time(ADDR_PTR addr);
 
 void clflush(ADDR_PTR addr);
 
+static inline uint32_t rdtsc32(void) {
+    uint32_t lo;
+    // Execute the RDTSC instruction and output only the lower 32 bits (in EAX).
+    asm volatile ("rdtsc" : "=a"(lo) : : "edx");
+    return lo;
+}
+
+int find_mode(int arr[], int n);
+
 #endif
+

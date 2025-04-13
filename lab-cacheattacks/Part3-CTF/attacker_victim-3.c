@@ -57,7 +57,7 @@ int main(int argc, char **argv)
             int before = rdtsc32();
             asm volatile("lfence\n\t");
             int index = j*8;
-            for(int repeat = 0; repeat < 10000; repeat++){
+            for(int repeat = 0; repeat < 1000; repeat++){
                 int inner_index = index;
                 for(int k = 0; k < num_l2_assoc; k++){
                     tmp = target_buffer[inner_index];
@@ -71,14 +71,14 @@ int main(int argc, char **argv)
 		}
         // printf("Baseline: %d\n", baseline / 10);
         baseline = baseline / 1024;
-        int threshold = baseline / 6;
+        int threshold = baseline / 2;
 
         int count = 0;
 		for(int j = 0; j < num_l2_set; j++){
             int before = rdtsc32();
             asm volatile("lfence\n\t");
             int index = j*8;
-            for(int repeat = 0; repeat < 10000; repeat++){
+            for(int repeat = 0; repeat < 1000; repeat++){
                 int inner_index = index;
                 for(int k = 0; k < num_l2_assoc; k++){
                     tmp = target_buffer[inner_index];

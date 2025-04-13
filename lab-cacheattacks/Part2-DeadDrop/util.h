@@ -30,4 +30,19 @@ char *binary_to_string(char *data);
 
 int string_to_int(char* s);
 
+static inline uint32_t rdtsc32(void) {
+    uint32_t lo;
+    // Execute the RDTSC instruction and output only the lower 32 bits (in EAX).
+    asm volatile ("rdtsc" : "=a"(lo) : : "edx");
+    return lo;
+}
+
+static inline uint64_t rdtsc64(void) {
+    uint32_t lo, hi;
+    asm volatile ("rdtsc" : "=a"(lo), "=d"(hi));
+    // Combine the high and low bits into a 64-bit value.
+    return ((uint64_t)hi << 32) | lo;
+}
+
 #endif
+

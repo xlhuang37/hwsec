@@ -1,6 +1,6 @@
 include ../cpu.mk
 
-TARGETS=attacker
+TARGETS=attacker attacker_victim-3
 UTILS=util.o 
 
 all: $(TARGETS)
@@ -26,7 +26,11 @@ run_victim-4:
 run_attacker: attacker
 	taskset -c $(RECEIVER_CPU) ./attacker
 
+run_attacker_victim-3: attacker_victim-3
+	taskset -c $(RECEIVER_CPU) ./attacker_victim-3
+
 .PHONY:	clean
 
 clean:
 	$(RM) *.o $(HELPERS) $(TARGETS) 
+
