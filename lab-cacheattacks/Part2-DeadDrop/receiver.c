@@ -49,26 +49,29 @@ int main(int argc, char **argv)
 		// for(int j = 0; j < num_l2_set * num_l2_assoc; j++){
 		// 	tmp = target_buffer[j * 8];
 		// }
-		int affected_set = 0;
-        int count = 0;
-		for(int j = 0; j < num_l2_set; j++){
-            int before = rdtsc32();
-            asm volatile("lfence\n\t");
-            int index = j*8;
-            for(int repeat = 0; repeat < 10000; repeat++){
-                int inner_index = index;
-                for(int k = 0; k < num_l2_assoc; k++){
-                    tmp = target_buffer[inner_index];
-                    inner_index += num_l2_set * 8;
-                }
-            }
-
-            asm volatile("lfence\n\t");
-            int after = rdtsc32();
-            count = (after - before);
-            printf("Count: %d\n", count);
+		asm volatile("lfence\n\t");
+		for(int i = 0; i < 100000; i++){
+			asm("pause");
 		}
-			// printf("Receiver: %d\n", affected_set);
+		int affected_set = 0;
+		for(int j = num_l2_set - 1; j > -1; j--){
+			count = 0;
+			for(int repeat = 0; repeat < 500; repeat++){
+				for(int k = 0; k < num_l2_assoc; k++){
+					access_time = measure_one_block_access_time((uint64_t)target_buffer + 64 * arr[j] + k * num_l2_set * 64);
+					if (access_time > 130) {
+						count += 1;
+					}
+				}
+			}
+			if(count > 1000) {
+				affected_set++;
+			}
+				// if(count > 10) {
+				// 	affected_set++;
+				// }
+		}
+			printf("Receiver: %d\n", affected_set);
 		
 			// if(count == 128) {
 			// 	success++;
