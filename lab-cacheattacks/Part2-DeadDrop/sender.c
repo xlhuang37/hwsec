@@ -44,7 +44,7 @@ int main(int argc, char **argv)
     
   
   int64_t before, after;
-  int64_t RUNTIME = (1ll << 35);
+  int64_t RUNTIME = (1ll << 33);
   while (sending) {
     printf("Please type a message.\n");
     char text_buf[128];

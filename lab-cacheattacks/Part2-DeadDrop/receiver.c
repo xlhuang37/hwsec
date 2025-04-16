@@ -64,7 +64,7 @@ int main(int argc, char **argv)
 					}
 				}
 			}
-			if(count > 100) {
+			if(count > 250) {
 				affected_set++;
 			}
 				// if(count > 10) {
