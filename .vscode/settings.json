@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "labspectreipc.h": "c",
+        "labspectre.h": "c",
+        "stdbool.h": "c"
+    }
+}

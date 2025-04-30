@@ -1,0 +1,11 @@
+Question 1:  128, which is the size of the ascii table.
+
+Question 2:  No, my attack will likely stop working.  I think to make it work, we will have to do prime and probe - attacks that target the shared cache as we need something shared to conduct our attack.
+
+Question 3: We can just access out-of-bound value with that array. Even though that will trigger seg fault in normal program if we are touching unmapped virtual memory, since we are in speculation mode, those faults will be suppressed and we can continue sweeping. 
+
+Question 4: Even training just once before executing in my code increases the success rate to roughly 80%.  The more times we train, the better the performance seems to be. In my experiment, training for 16 times can make it reliably go above 95% success rate. 
+
+Question 5: I perform cache eviction to make sure that the variable is no longer in cache, increasing the temporal window. Also, I perform repetition to reduce noise and increase signal. 
+
+Question 6: I will need to know the LLC cache size, which can be obtained experimentally but just testing what sizes work.  I will also need to figure out how the branch predictor work, which can also be done by just training and testing the accuracy.  I will also need to find equivalent instructions to flushing.  Finally, I will want to know about any mitigations in place to be prepared in modifying my attacks. 
